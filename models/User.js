@@ -19,12 +19,15 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
 });
 
 // Criptografa a senha antes de salvar
 UserSchema.pre('save', async function(next) {
     if (this.isModified('password')) {
+        console.log('Hashing password:', this.password);
         this.password = await bcrypt.hash(this.password, 10);
     }
     next();

@@ -2,6 +2,9 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const crypto = require('crypto');
+const bcrypt = require('bcrypt');
+const sendEmail = require('../services/emailSender');
 
 const router = express.Router();
 
@@ -53,6 +56,75 @@ router.post('/signin', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Server error.', error: error.message });
     }
+});
+
+// Rota de Solicitação de Reset de Senha
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // 1. Procurar o usuário pelo e-mail
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // 2. Gerar um token de reset único e temporário
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    const resetTokenExpiry = Date.now() + 3600000; // Expira em 1 hora
+
+    // 3. Salvar o token e o tempo de expiração no usuário
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = resetTokenExpiry;
+    await user.save();
+
+    // 4. Criar o link de reset
+    const resetURL = `${req.protocol}://localhost:3000/reset-password/${resetToken}`;
+    const message = `Você solicitou a redefinição de senha. Use o seguinte link para redefinir sua senha: ${resetURL}\n\nSe você não solicitou isso, por favor, ignore este e-mail.`;
+
+    // 5. Enviar o e-mail
+    await sendEmail({
+      email: user.email,
+      subject: 'Redefinição de Senha',
+      message,
+    });
+
+    res.status(200).json({ message: 'Email sent successfully!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+// Rota de Reset de Senha
+router.post('/reset-password/:token', async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+    const { token } = req.params;
+
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired token.' });
+    }
+
+    // Atribua a senha hasheada ao usuário
+    user.password = newPassword;
+    
+    // Limpe o token
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    res.status(200).json({ message: 'Password reset successful!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
 
 module.exports = router;
