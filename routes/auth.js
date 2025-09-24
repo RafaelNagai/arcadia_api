@@ -79,14 +79,29 @@ router.post('/forgot-password', async (req, res) => {
     await user.save();
 
     // 4. Criar o link de reset
-    const resetURL = `${req.protocol}://localhost:3000/reset-password/${resetToken}`;
-    const message = `Você solicitou a redefinição de senha. Use o seguinte link para redefinir sua senha: ${resetURL}\n\nSe você não solicitou isso, por favor, ignore este e-mail.`;
+    const resetURL = `${req.protocol}://${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    
+    // 5. Criar o template HTML do e-mail
+    const htmlMessage = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <h2 style="color: #4CAF50;">Redefinição de Senha</h2>
+        <p>Olá,</p>
+        <p>Recebemos uma solicitação para redefinir a senha da sua conta.</p>
+        <p>Para prosseguir, clique no botão abaixo para criar uma nova senha:</p>
+        <div style="margin: 20px 0;">
+          <a href="${resetURL}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Redefinir Senha</a>
+        </div>
+        <p>O link de redefinição de senha é válido por 1 hora.</p>
+        <p>Se você não solicitou a redefinição de senha, por favor, ignore este e-mail.</p>
+        <p>Atenciosamente,<br>Sua equipe de suporte</p>
+      </div>
+    `;
 
     // 5. Enviar o e-mail
     await sendEmail({
       email: user.email,
       subject: 'Redefinição de Senha',
-      message,
+      html: htmlMessage,
     });
 
     res.status(200).json({ message: 'Email sent successfully!' });
