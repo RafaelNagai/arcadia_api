@@ -1,4 +1,4 @@
-const ORIGIN = {
+const ORIGINS = {
     BRITANNIA: "Britannia",
     CAMELOT: "Camelot",
     GALAHAD: "Galahad",
@@ -8,5 +8,5 @@ const ORIGIN = {
 }
 
 module.exports = {
-  ORIGIN
+  ORIGINS
 };
