@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 const { SkillSchema } = require('./Skill');
 
 const ATTRIBUTES = {
-  PHYSICAL: 'Physical',
-  DEXTERITY: 'Dexterity',
-  INTELECTUO: 'Intelectuo',
-  INFLUENCE: 'Influence',
-  HP_MAX: 'HP Max',
-  SANITY_MAX: 'Sanidade Max'
+  PHYSICAL: 'physical',
+  DEXTERITY: 'dexterity',
+  INTELECTUO: 'intelectuo',
+  INFLUENCE: 'influence',
+  HP_MAX: 'hpMax',
+  SANITY_MAX: 'sanityMax'
 };
 
 const PhysicalSchema = new mongoose.Schema({

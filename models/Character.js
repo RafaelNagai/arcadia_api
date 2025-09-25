@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const { RELIGIONS } = require('./Religion');
 const { RACES } = require('./Race');
 const { ORIGINS } = require('./Origin');
-const { PhysicalSchema, DexteritySchema, IntelectuoSchema, InfluenceSchema } = require('./Attribute');
+const { PhysicalSchema, DexteritySchema, IntelectuoSchema, InfluenceSchema, ATTRIBUTES } = require('./Attribute');
 
 const CharacterSchema = new mongoose.Schema({
     owner: { // Campo que fará a referência
@@ -28,6 +29,11 @@ const CharacterSchema = new mongoose.Schema({
         enum: Object.values(ORIGINS),
         required: true,
     },
+    religion: {
+        type: String,
+        enum: Object.values(RELIGIONS),
+        required: true,
+    },
     profession: {
         type: String,
         required: true,
@@ -39,10 +45,10 @@ const CharacterSchema = new mongoose.Schema({
         min: 0
     },
     attributes: {
-        physical: PhysicalSchema,
-        dexterity: DexteritySchema,
-        intelectuo: IntelectuoSchema,
-        influence: InfluenceSchema,
+        [ATTRIBUTES.PHYSICAL]: PhysicalSchema,
+        [ATTRIBUTES.DEXTERITY]: DexteritySchema,
+        [ATTRIBUTES.INTELECTUO]: IntelectuoSchema,
+        [ATTRIBUTES.INFLUENCE]: InfluenceSchema,
     },
 });
 

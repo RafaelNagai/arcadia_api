@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Rules = require('../../models/Rules'); // Importe o seu modelo de regras
 const { ATTRIBUTES } = require('../../models/Attribute');
 const { RACES } = require('../../models/Race');
-const { ORIGIN } = require('../../models/Origin');
+const { ORIGINS } = require('../../models/Origin');
 
 const initialRules = {
   version: '1.0',
@@ -59,7 +59,7 @@ const initialRules = {
     },
   },
   originBonuses: {
-    [ORIGIN.BRITANNIA]: {
+    [ORIGINS.BRITANNIA]: {
         [ATTRIBUTES.PHYSICAL]: 0,
         [ATTRIBUTES.DEXTERITY]: 1,
         [ATTRIBUTES.INTELECTUO]: 0,
@@ -67,7 +67,7 @@ const initialRules = {
         [ATTRIBUTES.HP_MAX]: 20,
         [ATTRIBUTES.SANITY_MAX]: 20
     },
-    [ORIGIN.CAMELOT]: {
+    [ORIGINS.CAMELOT]: {
         [ATTRIBUTES.PHYSICAL]: 0,
         [ATTRIBUTES.DEXTERITY]: 0,
         [ATTRIBUTES.INTELECTUO]: 0,
@@ -75,7 +75,7 @@ const initialRules = {
         [ATTRIBUTES.HP_MAX]: 20,
         [ATTRIBUTES.SANITY_MAX]: 20
     },
-    [ORIGIN.GALAHAD]: {
+    [ORIGINS.GALAHAD]: {
         [ATTRIBUTES.PHYSICAL]: 0,
         [ATTRIBUTES.DEXTERITY]: 0,
         [ATTRIBUTES.INTELECTUO]: 1,
@@ -83,7 +83,7 @@ const initialRules = {
         [ATTRIBUTES.HP_MAX]: 20,
         [ATTRIBUTES.SANITY_MAX]: 20
     },
-    [ORIGIN.NORTH_GALAHAD]: {
+    [ORIGINS.NORTH_GALAHAD]: {
         [ATTRIBUTES.PHYSICAL]: 0,
         [ATTRIBUTES.DEXTERITY]: 1,
         [ATTRIBUTES.INTELECTUO]: 0,
@@ -91,7 +91,7 @@ const initialRules = {
         [ATTRIBUTES.HP_MAX]: 30,
         [ATTRIBUTES.SANITY_MAX]: 10
     },
-    [ORIGIN.RUBRA]: {
+    [ORIGINS.RUBRA]: {
         [ATTRIBUTES.PHYSICAL]: 1,
         [ATTRIBUTES.DEXTERITY]: 0,
         [ATTRIBUTES.INTELECTUO]: 0,
@@ -99,7 +99,7 @@ const initialRules = {
         [ATTRIBUTES.HP_MAX]: 30,
         [ATTRIBUTES.SANITY_MAX]: 10
     },
-    [ORIGIN.UNION]: {
+    [ORIGINS.UNION]: {
         [ATTRIBUTES.PHYSICAL]: 0,
         [ATTRIBUTES.DEXTERITY]: 0,
         [ATTRIBUTES.INTELECTUO]: 0,
