@@ -3,6 +3,7 @@ const { RELIGIONS } = require('./Religion');
 const { RACES } = require('./Race');
 const { ORIGINS } = require('./Origin');
 const { PhysicalSchema, DexteritySchema, IntelectuoSchema, InfluenceSchema, ATTRIBUTES } = require('./Attribute');
+const { ARCANE_TYPES } = require('./Arcane');
 
 const CharacterSchema = new mongoose.Schema({
     owner: { // Campo que fará a referência
@@ -33,6 +34,23 @@ const CharacterSchema = new mongoose.Schema({
         type: String,
         enum: Object.values(RELIGIONS),
         required: true,
+    },
+    arcane: {
+        affinity: {
+            type: String,
+            enum: Object.values(ARCANE_TYPES),
+            required: true,
+        },
+        antitese: {
+            type: String,
+            enum: Object.values(ARCANE_TYPES),
+            required: true,
+        },
+        exposition: {
+            type: Number,
+            default: 0,
+            min: 0
+        }
     },
     profession: {
         type: String,

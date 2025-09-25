@@ -1,10 +1,10 @@
 const ORIGINS = {
-    BRITANNIA: "Britannia",
-    CAMELOT: "Camelot",
-    GALAHAD: "Galahad",
-    NORTH_GALAHAD: "NorthGalahad",
-    RUBRA: "Rubra",
-    UNION: "Union"
+    BRITANNIA: "britannia",
+    CAMELOT: "camelot",
+    GALAHAD: "galahad",
+    NORTH_GALAHAD: "northGalahad",
+    RUBRA: "rubra",
+    UNION: "union"
 }
 
 module.exports = {

@@ -1,10 +1,10 @@
 const RACES = {
-    AVARO: "Avaro",
-    DWARF: "Dwarf",
-    HUMAN: "Human",
-    ELF: "Elf",
-    NOCTUNE_ELF: "NoctuneElf",
-    ORC: "Orc"
+    AVARO: "avaro",
+    DWARF: "dwarf",
+    HUMAN: "human",
+    ELF: "elf",
+    NOCTUNE_ELF: "noctuneElf",
+    ORC: "orc"
 }
 
 module.exports = {

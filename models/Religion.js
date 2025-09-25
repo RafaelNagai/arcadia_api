@@ -1,8 +1,8 @@
 const RELIGIONS = {
-    ALFA: "Alfaism",
-    BETA: "Betaism",
-    GAMA: "Gamaism",
-    ATHEIST: "Atheism"
+    ALFA: "alfaism",
+    BETA: "betaism",
+    GAMA: "gamaism",
+    ATHEIST: "atheism"
 }
 
 module.exports = {

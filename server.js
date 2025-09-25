@@ -4,7 +4,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
 const characterRoutes = require('./routes/character');
-const authMiddleware = require('./middlewares/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,14 +20,6 @@ app.use(express.json()); // Habilita o uso de JSON no corpo das requisições
 // Rotas
 app.use('/api/auth', authRoutes);
 app.use('/api/characters', characterRoutes);
-
-// Exemplo de rota protegida (requer autenticação)
-app.get('/api/profile', authMiddleware, (req, res) => {
-    res.json({
-        message: 'Welcome to your profile!',
-        user: req.user
-    });
-});
 
 // Inicia o servidor
 app.listen(PORT, () => {

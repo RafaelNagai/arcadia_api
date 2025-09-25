@@ -11,6 +11,7 @@ const { RACES } = require('../models/Race');
 const { ORIGINS } = require('../models/Origin');
 const { ATTRIBUTES } = require('../models/Attribute');
 const { RELIGIONS } = require('../models/Religion');
+const { ARCANE_TYPES } = require('../models/Arcane');
 
 // Função utilitária para calcular os atributos finais
 const calculateAttributes = (baseAttributes, raceBonuses, originBonuses) => {
@@ -59,6 +60,11 @@ router.post('/', authMiddleware, async (req, res) => {
 
         // 4. Calcular atributos finais com bônus
         const finalAttributes = calculateAttributes(baseAttributes, raceBonuses, originBonuses);
+
+        // 4.1 Randomizar a afinidade e antitese do personagem
+        const arcaneTypes = Object.values(ARCANE_TYPES);
+        const affinity = arcaneTypes[Math.floor(Math.random() * arcaneTypes.length)];
+        const antitese = arcaneTypes[Math.floor(Math.random() * arcaneTypes.length)];
         
         // 5. Criar e salvar o personagem
         const newCharacter = new Character({
@@ -69,6 +75,10 @@ router.post('/', authMiddleware, async (req, res) => {
             origin,
             profession,
             religion,
+            arcane: {
+                affinity,
+                antitese,
+            },
             attributes: finalAttributes,
         });
 
