@@ -12,6 +12,7 @@ const { ORIGINS } = require('../models/Origin');
 const { ATTRIBUTES } = require('../models/Attribute');
 const { RELIGIONS } = require('../models/Religion');
 const { ARCANE_TYPES } = require('../models/Arcane');
+const { User, ROLES } = require('../models/User');
 
 // Função utilitária para calcular os atributos finais
 const calculateAttributes = (baseAttributes, raceBonuses, originBonuses) => {
@@ -89,6 +90,98 @@ router.post('/', authMiddleware, async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ code: 1100, message: 'Failed create character', error: error.message });
+    }
+});
+
+// Rota para ADICIONAR um usuário para compartilhar a ficha (usando email ou username)
+router.put('/:characterId/share', authMiddleware, async (req, res) => {
+    try {
+        const { identifier, role } = req.body; // 'identifier' pode ser email ou username
+        const { characterId } = req.params;
+
+        if(!Object.values(ROLES).includes(role)) {
+            return res.status(404).json({ message: 'Role not found.' });
+        }
+
+        // 1. Encontre a ficha de personagem
+        const character = await Character.findById(characterId);
+        if (!character) {
+            return res.status(404).json({ message: 'Character not found.' });
+        }
+
+        // 2. Verifique se o usuário logado é o dono da ficha
+        if (character.owner.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'You do not have permission to share this character sheet.' });
+        }
+        
+        // 3. Encontre o usuário a ser compartilhado por email ou username
+        const userToAdd = await User.findOne({
+            $or: [{ username: identifier }, { email: identifier }]
+        });
+        
+        if (!userToAdd) {
+            return res.status(404).json({ message: 'User to be shared with not found.' });
+        }
+
+        // 4. Adicione o ID do usuário à lista de compartilhados
+        const updatedCharacter = await Character.findByIdAndUpdate(
+            characterId,
+            { $addToSet: { shared: { userId: userToAdd._id, role: role } } }, // Use o _id do usuário encontrado
+            { new: true, runValidators: true }
+        );
+
+        res.status(200).json({
+            message: 'User added to shared list successfully.',
+            character: updatedCharacter
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error.', error: error.message });
+    }
+});
+
+// Rota para REMOVER um usuário da lista de compartilhados (usando email ou username)
+router.put('/:characterId/unshare', authMiddleware, async (req, res) => {
+    try {
+        const { identifier } = req.body;
+        const { characterId } = req.params;
+
+        // 1. Encontre a ficha de personagem
+        const character = await Character.findById(characterId);
+        if (!character) {
+            return res.status(404).json({ message: 'Character not found.' });
+        }
+
+        // 2. Verifique se o usuário logado é o dono da ficha
+        if (character.owner.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'You do not have permission to remove users from this character sheet.' });
+        }
+        
+        // 3. Encontre o usuário a ser removido por email ou username
+        const userToRemove = await User.findOne({
+            $or: [{ username: identifier }, { email: identifier }]
+        });
+
+        if (!userToRemove) {
+            return res.status(404).json({ message: 'User to be removed not found.' });
+        }
+
+        // 4. Remova o ID do usuário da lista de compartilhados
+        const updatedCharacter = await Character.findByIdAndUpdate(
+            characterId,
+            { $pull: { shared: { userId: userToRemove._id } } }, // Use o _id do usuário encontrado
+            { new: true, runValidators: true }
+        );
+
+        res.status(200).json({
+            message: 'User removed from shared list successfully.',
+            character: updatedCharacter
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error.', error: error.message });
     }
 });
 

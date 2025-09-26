@@ -2,6 +2,12 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+const ROLES = {
+  PLAYER: 'player',
+  SPECTATOR: 'spectator',
+  GAMEMASTER: 'gameMaster',
+};
+
 const UserSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -40,4 +46,7 @@ UserSchema.methods.comparePassword = function(candidatePassword) {
     return bcrypt.compare(candidatePassword, this.password);
 };
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = {
+    User: mongoose.model('User', UserSchema),
+    ROLES
+};

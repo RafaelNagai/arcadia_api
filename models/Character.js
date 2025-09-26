@@ -4,6 +4,21 @@ const { RACES } = require('./Race');
 const { ORIGINS } = require('./Origin');
 const { PhysicalSchema, DexteritySchema, IntelectuoSchema, InfluenceSchema, ATTRIBUTES } = require('./Attribute');
 const { ARCANE_TYPES } = require('./Arcane');
+const { ROLES } = require('./User');
+
+const SharedUserSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
+    role: {
+        type: String,
+        enum: Object.values(ROLES),
+        default: ROLES.SPECTATOR,
+        required: true,
+    }
+}, { _id: false });
 
 const CharacterSchema = new mongoose.Schema({
     owner: { // Campo que fará a referência
@@ -11,6 +26,7 @@ const CharacterSchema = new mongoose.Schema({
         ref: 'User', // Nome do modelo ao qual se refere
         required: true,
     },
+    shared: [SharedUserSchema],
     version: {
         type: String,
         required: true
