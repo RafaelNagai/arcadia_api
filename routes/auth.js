@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
+const passport = require('passport');
 const sendEmail = require('../services/emailSender');
 
 const router = express.Router();
@@ -141,5 +142,37 @@ router.post('/reset-password/:token', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+// Rota para iniciar o fluxo de login do Google
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// Rota de callback do Google, onde o Passport lida com a resposta
+router.get('/google/callback', 
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    (req, res) => {
+        // Autenticação bem-sucedida, gere e retorne o JWT
+        const token = jwt.sign(
+            { id: req.user._id, username: req.user.username },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+        res.redirect(`http://seu-frontend.com/auth-success?token=${token}`);
+    }
+);
+
+// Rotas da Apple (são similares às do Google)
+router.get('/apple', passport.authenticate('apple'));
+
+router.post('/apple/callback', 
+    passport.authenticate('apple', { failureRedirect: '/login' }),
+    (req, res) => {
+        const token = jwt.sign(
+            { id: req.user._id, username: req.user.username },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+        res.redirect(`http://seu-frontend.com/auth-success?token=${token}`);
+    }
+);
 
 module.exports = router;

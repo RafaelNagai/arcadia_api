@@ -6,7 +6,9 @@ const http = require('http');
 const { Server } = require("socket.io");
 const authRoutes = require('./routes/auth');
 const characterRoutes = require('./routes/character');
-const setupSocketEvents = require('./socketio'); // Importa o novo módulo
+const setupSocketEvents = require('./socketio');
+const passport = require('./services/passport'); // Importa a sua configuração do Passport
+const session = require('express-session');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,6 +21,17 @@ mongoose.connect(MONGO_URI)
 
 // Middlewares
 app.use(express.json());
+
+// Adicione o middleware de sessão
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true
+}));
+
+// Inicialize o Passport
+app.use(passport.initialize());
+app.use(passport.session()); // Use a sessão se for o caso
 
 // Rotas da API REST
 app.use('/api/auth', authRoutes);
