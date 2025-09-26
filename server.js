@@ -1,9 +1,12 @@
 // server.js
-require('dotenv').config(); // Carrega as variáveis de ambiente
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const http = require('http');
+const { Server } = require("socket.io");
 const authRoutes = require('./routes/auth');
 const characterRoutes = require('./routes/character');
+const setupSocketEvents = require('./socketio'); // Importa o novo módulo
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,13 +18,26 @@ mongoose.connect(MONGO_URI)
     .catch(err => console.error('Could not connect to MongoDB:', err));
 
 // Middlewares
-app.use(express.json()); // Habilita o uso de JSON no corpo das requisições
+app.use(express.json());
 
-// Rotas
+// Rotas da API REST
 app.use('/api/auth', authRoutes);
 app.use('/api/characters', characterRoutes);
 
-// Inicia o servidor
-app.listen(PORT, () => {
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"]
+  },
+  // O token de autenticação será passado aqui pelo frontend
+  // auth: { token: "token_jwt_do_usuario" }
+});
+
+// Configura os eventos do Socket.IO chamando o novo módulo
+setupSocketEvents(io);
+
+server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

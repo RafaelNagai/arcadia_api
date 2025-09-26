@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const Character = require('../models/Character');
 const Rules = require('../models/Rules'); // Assumindo que o modelo de regras está neste caminho
-const authMiddleware = require('../middlewares/auth');
+const { authMiddleware } = require('../middlewares/auth');
 
 // Importe suas constantes para usar em validações e cálculos
 const { RACES } = require('../models/Race');
