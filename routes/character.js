@@ -39,7 +39,7 @@ router.post('/', authMiddleware, async (req, res) => {
             return res.status(400).json({ code: 1102, message: 'Invalid Origin.' });
         }
         if (!Object.values(RELIGIONS).includes(religion)) {
-            return res.status(400).json({ code: 1103, message: 'Invalid Origin.' });
+            return res.status(400).json({ code: 1103, message: 'Invalid Religion.' });
         }
 
         // 2. Obter a versão atual dos bonus de raça e origem
