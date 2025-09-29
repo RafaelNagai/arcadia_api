@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "seed": "node database/seeds/ruleSeed.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "seed": "ts-node src/infrastructure/database/mongoose/seed/seed.ts",
+    "dev": "ts-node-dev --respawn --transpile-only src/application/server.ts",
+    "dev-js": "node server.js",
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -31,5 +33,20 @@
     "passport-apple": "^2.0.2",
     "passport-google-oauth20": "^2.0.0",
     "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/express": "^5.0.3",
+    "@types/express-session": "^1.18.2",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/mongoose": "^5.11.96",
+    "@types/node": "^24.5.2",
+    "@types/nodemailer": "^7.0.1",
+    "@types/passport": "^1.0.17",
+    "@types/passport-apple": "^2.0.3",
+    "@types/passport-google-oauth20": "^2.0.16",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.2"
   }
 }
