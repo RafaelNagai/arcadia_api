@@ -1,4 +1,4 @@
-import { ROLES } from "../../infrastructure/database/mongoose/User";
+import { ROLES } from "../../infrastructure/database/mongoose/UserSchema";
 
 
 export interface SharedUser {

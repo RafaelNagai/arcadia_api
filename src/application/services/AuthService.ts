@@ -1,21 +1,21 @@
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
-import { User } from "../../infrastructure/database/mongoose/User";
+import { UserModel } from "../../infrastructure/database/mongoose/UserSchema";
 import sendEmail from "../../infrastructure/services/EmailSender";
 
 export class AuthService {
   static async signUp(username: string, email: string, password: string) {
-    const existingUser = await User.findOne({ email });
+    const existingUser = await UserModel.findOne({ email });
     if (existingUser) throw new Error("Email already in use.");
 
-    const newUser = new User({ username, email, password });
+    const newUser = new UserModel({ username, email, password });
     await newUser.save();
 
     return { message: "User created successfully!" };
   }
 
   static async signIn(email: string, password: string) {
-    const user = await User.findOne({ email });
+    const user = await UserModel.findOne({ email });
     if (!user) throw new Error("Invalid credentials.");
 
     const isMatch = await user.comparePassword(password);
@@ -31,7 +31,7 @@ export class AuthService {
   }
 
   static async forgotPassword(email: string, frontendUrl: string) {
-    const user = await User.findOne({ email });
+    const user = await UserModel.findOne({ email });
     if (!user) throw new Error("User not found.");
 
     const resetToken = crypto.randomBytes(20).toString("hex");
@@ -65,7 +65,7 @@ export class AuthService {
   }
 
   static async resetPassword(token: string, newPassword: string) {
-    const user = await User.findOne({
+    const user = await UserModel.findOne({
       resetPasswordToken: token,
       resetPasswordExpires: { $gt: Date.now() },
     });

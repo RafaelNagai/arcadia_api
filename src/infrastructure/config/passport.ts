@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy, Profile as GoogleProfile } from "passport-google-oauth20";
 import AppleStrategy, { Profile as AppleProfile } from "passport-apple";
-import { IUser, User } from "../database/mongoose/User";
+import { IUser, UserModel } from "../database/mongoose/UserSchema";
 
 // ======================
 // Serialização do usuário
@@ -12,7 +12,7 @@ passport.serializeUser((user: any, done) => {
 
 passport.deserializeUser(async (id: string, done) => {
   try {
-    const user = await User.findById(id);
+    const user = await UserModel.findById(id);
     done(null, user);
   } catch (error) {
     done(error as any, null);
@@ -36,11 +36,11 @@ passport.use(
       done: (error: any, user?: IUser | false) => void
     ) => {
       try {
-        let user = await User.findOne({ googleId: profile.id });
+        let user = await UserModel.findOne({ googleId: profile.id });
 
         if (user) return done(null, user);
 
-        user = new User({
+        user = new UserModel({
           googleId: profile.id,
           username: profile.displayName,
           email: profile.emails?.[0].value,

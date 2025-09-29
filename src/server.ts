@@ -4,10 +4,10 @@ import mongoose from 'mongoose';
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import session from 'express-session';
-import characterRoutes from '../infrastructure/routes/CharacterRoutes';
-import setupSocketEvents from './socketio';
+import characterRoutes from './infrastructure/routes/CharacterRoute';
+import setupSocketEvents from './sockets/CharacterSocket';
 import passport from 'passport';
-import authRoutes from '../infrastructure/routes/auth';
+import authRoutes from './infrastructure/routes/AuthRoute';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3000;

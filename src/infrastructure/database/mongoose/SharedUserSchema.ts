@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
-import { ROLES } from "./User";
+import { ROLES } from "./UserSchema";
 
 export interface ISharedUser {
   userId: Types.ObjectId;  // aqui usamos Types.ObjectId
