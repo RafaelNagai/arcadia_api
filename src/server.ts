@@ -20,9 +20,21 @@ mongoose.connect(MONGO_URI)
   .catch((err) => console.error('Could not connect to MongoDB:', err));
 
 // Defina as opções do CORS. Use a variável de ambiente para a URL do frontend.
+const whitelist = [process.env.FRONTEND_URL]; // Inclua a URL de produção aqui
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL,
-  optionsSuccessStatus: 200,
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    // Para requisições sem origem (como Postman), ou se a origem for do localhost, permita.
+    if (!origin || origin.startsWith('http://localhost:')) {
+      callback(null, true);
+    } 
+    // Para produção, verifique se a URL de origem está na sua lista de permissões.
+    else if (whitelist.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Acesso não permitido pela política de CORS'));
+    }
+  }
 };
 
 // Use o middleware CORS com as opções definidas
