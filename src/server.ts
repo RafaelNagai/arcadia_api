@@ -8,6 +8,7 @@ import characterRoutes from './infrastructure/routes/CharacterRoute';
 import setupSocketEvents from './sockets/CharacterSocket';
 import passport from 'passport';
 import authRoutes from './infrastructure/routes/AuthRoute';
+import cors from 'cors';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
@@ -17,6 +18,15 @@ const MONGO_URI: string = process.env.MONGO_URI || 'mongodb://localhost:27017/au
 mongoose.connect(MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Could not connect to MongoDB:', err));
+
+// Defina as opções do CORS. Use a variável de ambiente para a URL do frontend.
+const corsOptions = {
+  origin: process.env.FRONTEND_URL,
+  optionsSuccessStatus: 200,
+};
+
+// Use o middleware CORS com as opções definidas
+app.use(cors(corsOptions));
 
 // Middlewares
 app.use(express.json());
