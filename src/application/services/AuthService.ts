@@ -27,7 +27,7 @@ export class AuthService {
       { expiresIn: "1h" }
     );
 
-    return { token };
+    return { token, email, username: user.username, id: user._id };
   }
 
   static async forgotPassword(email: string, frontendUrl: string) {
