@@ -4,14 +4,20 @@ import { UserModel } from "../../infrastructure/database/mongoose/UserSchema";
 import sendEmail from "../../infrastructure/services/EmailSender";
 
 export class AuthService {
+  static generateToken(payload: object): String {
+    return jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: "1h" });
+  }
+
   static async signUp(username: string, email: string, password: string) {
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) throw new Error("Email already in use.");
 
-    const newUser = new UserModel({ username, email, password });
-    await newUser.save();
+    const user = new UserModel({ username, email, password });
+    const newUser = await user.save();
 
-    return { message: "User created successfully!" };
+    const token = AuthService.generateToken({ id: newUser.id, username: newUser.username });
+
+    return { token, email, username: user.username, id: user._id };
   }
 
   static async signIn(email: string, password: string) {
@@ -21,11 +27,7 @@ export class AuthService {
     const isMatch = await user.comparePassword(password);
     if (!isMatch) throw new Error("Invalid credentials.");
 
-    const token = jwt.sign(
-      { id: user._id, username: user.username },
-      process.env.JWT_SECRET as string,
-      { expiresIn: "1h" }
-    );
+    const token = AuthService.generateToken({ id: user._id, username: user.username });
 
     return { token, email, username: user.username, id: user._id };
   }
